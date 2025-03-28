@@ -10,7 +10,7 @@
         #selection-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0f3c57, #471391); color: #ecf0f1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; padding: 20px; box-sizing: border-box; }
         #selection-screen h2 { margin-bottom: 40px; font-size: 2.5em; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); color: #e0e0e0; }
         #beyblade-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; max-width: 800px; }
-        .bey-card { position: relative; width: 250px; height: 180px; border-radius: 15px; overflow: hidden; cursor: pointer; background-color: #34495e; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4); border: 3px solid transparent; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; }
+        .bey-card { position: relative; width: 350px; height: 150px; border-radius: 15px; overflow: hidden; cursor: pointer; background-color: #34495e; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4); border: 3px solid transparent; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; }
         .bey-card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 8px 12px 20px rgba(0, 0, 0, 0.5); }
         .bey-card .bey-preview { height: 60%; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
          .bey-card .bey-symbol { font-size: 3.5em; color: rgba(255, 255, 255, 0.2); text-shadow: 2px 2px 5px rgba(0,0,0,0.4); z-index: 2; }
@@ -136,7 +136,7 @@
         }
 
         function createArena() {
-            const geometry = new THREE.CircleGeometry(ARENA_RADIUS, 64); const material = getMaterial(0xff6942, { metalness: 0.3, roughness: 0.6, side: THREE.DoubleSide }); arenaMesh = new THREE.Mesh(geometry, material); arenaMesh.rotation.x = -Math.PI / 2; arenaMesh.receiveShadow = true; scene.add(arenaMesh); const rimGeometry = new THREE.RingGeometry(ARENA_RADIUS, ARENA_RADIUS + 0.6, 64); const rimMaterial = getMaterial(0xcc3ff3, { metalness: 0.5, roughness: 0.4, side: THREE.DoubleSide }); rimMesh = new THREE.Mesh(rimGeometry, rimMaterial); rimMesh.rotation.x = -Math.PI / 2; rimMesh.position.y = 0.02; rimMesh.receiveShadow = true; scene.add(rimMesh);
+            const geometry = new THREE.CircleGeometry(ARENA_RADIUS, 64); const material = getMaterial(0xff6942, { metalness: 0.3, roughness: 0.6, side: THREE.DoubleSide }); arenaMesh = new THREE.Mesh(geometry, material); arenaMesh.rotation.x = -Math.PI / 2; arenaMesh.receiveShadow = true; scene.add(arenaMesh); const rimGeometry = new THREE.RingGeometry(ARENA_RADIUS, ARENA_RADIUS + 0.6, 64); const rimMaterial = getMaterial(0x454dc4, { metalness: 0.5, roughness: 0.4, side: THREE.DoubleSide }); rimMesh = new THREE.Mesh(rimGeometry, rimMaterial); rimMesh.rotation.x = -Math.PI / 2; rimMesh.position.y = 0.02; rimMesh.receiveShadow = true; scene.add(rimMesh);
         }
 
         function initSparkSystem() {
