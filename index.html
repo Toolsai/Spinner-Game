@@ -5,12 +5,167 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>戰鬥陀螺3D - 旋轉能量顯示版</title> {/* Changed Title */}
     <style>
+        /* 基礎響應式設置 */
+        :root {
+            --card-width: min(200px, calc(100vw / 2.5));
+            --card-height: calc(var(--card-width) * 1.4);
+        }
+
+        body { 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: sans-serif; 
+            background-color: #282c34; 
+            min-height: 100vh;
+            min-height: -webkit-fill-available; /* 修復 iOS Safari 高度問題 */
+        }
+
+        /* 選擇畫面響應式調整 */
+        #selection-screen { 
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto; /* 允許在需要時滾動 */
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+        }
+
+        #selection-screen h2 { 
+            font-size: clamp(1.5em, 5vw, 2.5em);
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        #beyblade-options { 
+            gap: min(30px, 3vw);
+            padding: 10px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .bey-card { 
+            width: var(--card-width);
+            height: var(--card-height);
+            min-width: 150px;
+        }
+
+        .bey-card .bey-symbol { 
+            font-size: clamp(2em, 8vw, 5em);
+        }
+
+        .bey-card .bey-name { 
+            font-size: clamp(1em, 3vw, 1.3em);
+        }
+
+        .bey-card .bey-stats { 
+            font-size: clamp(0.8em, 2.5vw, 0.9em);
+        }
+
+        /* 遊戲UI響應式調整 */
+        #game-ui { 
+            font-size: clamp(1em, 4vw, 1.6em);
+            width: 90%;
+            max-width: 600px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 能量條響應式調整 */
+        #charge-bar-container { 
+            width: min(350px, 90vw);
+            height: min(35px, 5vh);
+            bottom: 5%;
+        }
+
+        /* 旋轉能量條響應式調整 */
+        .spin-bar-container { 
+            width: min(35%, 150px);
+            height: min(35px, 5vh);
+            top: min(30px, 5vh);
+        }
+
+        #player-spin-bar-container { 
+            left: min(20px, 3vw);
+        }
+
+        #ai-spin-bar-container { 
+            right: min(20px, 3vw);
+        }
+
+        .spin-bar-label { 
+            font-size: clamp(0.8em, 3vw, 1.2em);
+        }
+
+        /* 開始按鈕響應式調整 */
+        #start-button { 
+            font-size: clamp(1.2em, 4vw, 1.6em);
+            padding: clamp(10px, 2vw, 15px) clamp(20px, 4vw, 40px);
+            margin-top: min(40px, 5vh);
+        }
+
+        /* 媒體查詢優化 */
+        @media (max-width: 768px) {
+            #beyblade-options {
+                justify-content: center;
+                gap: 15px;
+            }
+
+            .bey-card:hover {
+                transform: none; /* 移動設備取消懸停效果 */
+            }
+
+            .spin-bar-container {
+                width: 45%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #selection-screen h2 {
+                margin: 10px 0;
+            }
+
+            .spin-bar-label {
+                padding: 0 5px;
+            }
+
+            #game-ui {
+                padding: 8px 15px;
+            }
+        }
+
+        /* 橫屏模式優化 */
+        @media (max-height: 500px) and (orientation: landscape) {
+            #selection-screen {
+                padding: 5px;
+            }
+
+            #selection-screen h2 {
+                margin: 10px 0;
+            }
+
+            #beyblade-options {
+                gap: 10px;
+            }
+
+            .bey-card {
+                height: calc(var(--card-width) * 1.2);
+            }
+
+            #start-button {
+                margin-top: 15px;
+            }
+
+            .spin-bar-container {
+                top: 10px;
+            }
+        }
+
         /* Styles remain the same, added spin bar styles */
         body { margin: 0; overflow: hidden; font-family: sans-serif; background-color: #282c34; }
-        #selection-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #2c3e50, #1a252f); color: #ecf0f1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; padding: 10px 20px; box-sizing: border-box; overflow-y: auto; }
-        #selection-screen h2 { margin-bottom: 20px; font-size: 2em; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); color: #e0e0e0; }
-        #beyblade-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; max-width: 800px; padding: 10px; }
-        .bey-card { position: relative; width: calc(33.33% - 30px); min-width: 160px; max-width: 300px; height: 220px; border-radius: 15px; overflow: hidden; cursor: pointer; background-color: #34495e; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4); border: 3px solid transparent; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; margin: 10px; }
+        #selection-screen { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #2c3e50, #1a252f); color: #ecf0f1; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 10; padding: 20px; box-sizing: border-box; }
+        #selection-screen h2 { margin-bottom: 40px; font-size: 2.5em; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); color: #e0e0e0; }
+        #beyblade-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; max-width: 800px; }
+        .bey-card { position: relative; width: 200px; height: 280px; border-radius: 15px; overflow: hidden; cursor: pointer; background-color: #34495e; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.4); border: 3px solid transparent; transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; display: flex; flex-direction: column; }
         .bey-card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 8px 12px 20px rgba(0, 0, 0, 0.5); }
         .bey-card .bey-preview { height: 65%; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
          .bey-card .bey-symbol { font-size: 5em; color: rgba(255, 255, 255, 0.2); text-shadow: 2px 2px 5px rgba(0,0,0,0.4); z-index: 2; }
@@ -23,109 +178,24 @@
         #start-button:active { transform: scale(0.97); }
         #start-button:disabled { background: #7f8c8d; cursor: not-allowed; opacity: 0.6; }
         #game-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; cursor: pointer; }
-        #game-ui { position: absolute; top: 60px; /* Adjusted top position */ left: 50%; transform: translateX(-50%); color: white; background-color: rgba(44, 62, 80, 0.7); padding: 12px 25px; border-radius: 8px; font-size: 1.6em; z-index: 5; text-shadow: 1px 1px 3px rgba(0,0,0,0.7); display: none; pointer-events: none; text-align: center; width: 90%; max-width: 600px; font-size: calc(1em + 1vw); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        #charge-bar-container { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); width: 350px; height: 35px; background-color: rgba(0, 0, 0, 0.6); border: 2px solid #95a5a6; border-radius: 18px; z-index: 6; display: none; overflow: hidden; pointer-events: none; width: 80%; max-width: 350px; bottom: 5%; }
+        #game-ui { position: absolute; top: 60px; /* Adjusted top position */ left: 50%; transform: translateX(-50%); color: white; background-color: rgba(44, 62, 80, 0.7); padding: 12px 25px; border-radius: 8px; font-size: 1.6em; z-index: 5; text-shadow: 1px 1px 3px rgba(0,0,0,0.7); display: none; pointer-events: none; text-align: center; }
+        #charge-bar-container { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); width: 350px; height: 35px; background-color: rgba(0, 0, 0, 0.6); border: 2px solid #95a5a6; border-radius: 18px; z-index: 6; display: none; overflow: hidden; pointer-events: none; }
         #charge-bar-fill { width: 100%; height: 100%; background: linear-gradient(to right, #e74c3c, #f39c12, #2ecc71, #f39c12, #e74c3c); border-radius: 16px; }
         #charge-indicator { position: absolute; top: -2px; bottom: -2px; left: 0%; width: 6px; background-color: rgba(255, 255, 255, 0.9); border-radius: 3px; box-shadow: 0 0 5px rgba(255, 255, 255, 0.7); transform: translateX(-50%); transition: left 0.05s linear; }
 
         /* --- Spin Bar Styles --- */
-        .spin-bar-container { position: absolute; top: 10px; width: 35%; max-width: 200px; height: 30px; background-color: rgba(0, 0, 0, 0.5); border: 3px solid #7f8c8d; border-radius: 18px; z-index: 7; overflow: hidden; display: none; /* Initially hidden */ box-shadow: 0 2px 5px rgba(0,0,0,0.3); width: 40%; min-width: 120px; max-width: 200px; }
+        .spin-bar-container { position: absolute; top: 30px; width: 35%; max-width: 400px; height: 35px; background-color: rgba(0, 0, 0, 0.5); border: 3px solid #7f8c8d; border-radius: 18px; z-index: 7; overflow: hidden; display: none; /* Initially hidden */ box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
         .spin-bar-fill { height: 100%; width: 100%; /* Start full */ border-radius: 11px; transition: width 0.15s linear; /* Smooth transition */ background-color: #e67e22; /* Default fill */ }
         .spin-bar-label { color: white; font-size: 1.2em; text-shadow: 2px 2px 3px black; position: absolute; top: 50%; transform: translateY(-50%); padding: 0 15px; z-index: 8; pointer-events: none; }
 
-        #player-spin-bar-container { left: 10px; }
+        #player-spin-bar-container { left: 20px; }
         #player-spin-bar-label { left: 0; }
         /* Player fill color set in JS */
 
-        #ai-spin-bar-container { right: 10px; }
+        #ai-spin-bar-container { right: 20px; }
         #ai-spin-bar-label { right: 0; text-align: right;}
         /* AI fill color set in JS */
         /* --- End Spin Bar Styles --- */
-
-        /* 媒体查询适配小屏幕设备 */
-        @media screen and (max-width: 768px) {
-            .bey-card {
-                height: 180px; /* 在手机上进一步减小卡片高度 */
-                margin: 5px; /* 减小边距 */
-            }
-            
-            #selection-screen h2 {
-                font-size: 1.5em;
-                margin-bottom: 15px;
-            }
-            
-            #start-button {
-                margin-top: 20px;
-                padding: 10px 30px;
-                font-size: 1.2em;
-            }
-            
-            /* 调整相机位置以更好地显示战斗场地 */
-            camera.position.set(0, ARENA_RADIUS * 2.0, ARENA_RADIUS * 1.3);
-            camera.lookAt(0, 0, 0);
-        }
-
-        @media screen and (max-width: 480px) {
-            .bey-card {
-                width: calc(100% - 20px); /* 手机上改为单列 */
-            }
-            
-            #selection-screen h2 {
-                font-size: 1.8em;
-            }
-            
-            .spin-bar-container {
-                width: 45%;
-                min-width: 100px;
-                bottom: 12%;
-            }
-            
-            .spin-bar-label {
-                font-size: 0.9em;
-            }
-            
-            #start-button {
-                font-size: 1.2em;
-                padding: 10px 30px;
-            }
-        }
-
-        /* 添加横屏模式优化 */
-        @media screen and (orientation: landscape) and (max-height: 600px) {
-            #selection-screen h2 {
-                margin-bottom: 20px;
-                font-size: 1.8em;
-            }
-            
-            .bey-card {
-                height: 220px;
-            }
-            
-            #start-button {
-                margin-top: 20px;
-            }
-            
-            .spin-bar-container {
-                top: 20px;
-            }
-        }
-
-        /* 添加竖屏特定的样式 */
-        @media screen and (orientation: portrait) {
-            .bey-card {
-                width: calc(100% - 10px); /* 单列显示 */
-                height: 160px;
-            }
-            
-            .spin-bar-container {
-                top: 5px;
-            }
-            
-            #game-ui {
-                top: 45px;
-                font-size: 0.9em;
-            }
-        }
 
     </style>
 </head>
@@ -209,24 +279,8 @@
 
         // --- Initialization ---
         function init() {
-            // 修改場景背景色為深紫色
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0a0014); // 深紫色背景
-            scene.fog = new THREE.Fog(scene.background, ARENA_RADIUS * 2.5, ARENA_RADIUS * 5);
-
-            // 添加網格效果
-            createGridBackground();
-            
-            // 修改相机初始位置和角度
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            
-            // 根据设备方向调整相机位置
-            if (window.innerWidth < 768) {
-                camera.position.set(0, ARENA_RADIUS * 2.0, ARENA_RADIUS * 1.3);
-            } else {
-                camera.position.set(0, ARENA_RADIUS * 1.5, ARENA_RADIUS * 1.1);
-            }
-            camera.lookAt(0, 0, 0);
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x1a1a1d); scene.fog = new THREE.Fog(scene.background, ARENA_RADIUS * 2.5, ARENA_RADIUS * 5);
+             camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000); camera.position.set(0, ARENA_RADIUS * 1.5, ARENA_RADIUS * 1.1); camera.lookAt(0, 0, 0);
              renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(window.innerWidth, window.innerHeight); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.outputEncoding = THREE.sRGBEncoding; gameContainer.appendChild(renderer.domElement);
              const ambientLight = new THREE.AmbientLight(0xffffff, 0.4); scene.add(ambientLight); const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6); directionalLight.position.set(10, 20, 15); directionalLight.castShadow = true; directionalLight.shadow.mapSize.width = 2048; directionalLight.shadow.mapSize.height = 2048; directionalLight.shadow.camera.near = 0.5; directionalLight.shadow.camera.far = 50; directionalLight.shadow.camera.left = -ARENA_RADIUS * 1.5; directionalLight.shadow.camera.right = ARENA_RADIUS * 1.5; directionalLight.shadow.camera.top = ARENA_RADIUS * 1.5; directionalLight.shadow.camera.bottom = -ARENA_RADIUS * 1.5; scene.add(directionalLight); const fillLight = new THREE.HemisphereLight(0x6060aa, 0x404088, 0.2); scene.add(fillLight);
             createArena();
@@ -234,6 +288,18 @@
             window.addEventListener('resize', onWindowResize, false);
             setupSelectionUI();
             setupLaunchControls();
+
+            // 添加觸摸事件支持
+            gameContainer.addEventListener('touchstart', captureLaunchTiming, { passive: false });
+            
+            // 防止移動設備上的滾動
+            document.body.addEventListener('touchmove', function(e) {
+                if (gameState === 'fighting') {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+
+            updateCameraPosition();
         }
 
         function createArena() {
@@ -802,128 +868,26 @@
 
         function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
-            
-            // 根据设备宽度调整相机位置
-            if (window.innerWidth < 768) {
-                camera.position.set(0, ARENA_RADIUS * 2.0, ARENA_RADIUS * 1.3);
-            } else {
-                camera.position.set(0, ARENA_RADIUS * 1.5, ARENA_RADIUS * 1.1);
-            }
-            
-            camera.lookAt(0, 0, 0);
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
+            updateCameraPosition();
+        }
+
+        // 修改相機設置函數
+        function updateCameraPosition() {
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            const isLandscape = aspectRatio > 1;
+            
+            if (isLandscape) {
+                camera.position.set(0, ARENA_RADIUS * 1.5, ARENA_RADIUS * 1.1);
+            } else {
+                camera.position.set(0, ARENA_RADIUS * 2, ARENA_RADIUS * 1.4);
+            }
+            camera.lookAt(0, 0, 0);
         }
 
         // --- Start ---
         init();
-
-        // 添加新的網格背景創建函數
-        function createGridBackground() {
-            // 創建網格材質
-            const gridMaterial = new THREE.LineBasicMaterial({
-                color: 0xff00ff, // 粉紫色
-                transparent: true,
-                opacity: 0.3
-            });
-
-            // 創建藍色網格材質
-            const blueGridMaterial = new THREE.LineBasicMaterial({
-                color: 0x00ffff, // 青藍色
-                transparent: true,
-                opacity: 0.3
-            });
-
-            // 創建網格線
-            const gridSize = ARENA_RADIUS * 4;
-            const gridDivisions = 20;
-            const gridStep = gridSize / gridDivisions;
-
-            // 創建左側網格
-            const leftGrid = new THREE.Group();
-            for (let i = -gridDivisions; i <= gridDivisions; i++) {
-                const lineGeometry = new THREE.BufferGeometry();
-                const points = [];
-                
-                // 水平線
-                points.push(new THREE.Vector3(-gridSize, gridSize * 0.5, i * gridStep));
-                points.push(new THREE.Vector3(0, 0, i * gridStep));
-                
-                lineGeometry.setFromPoints(points);
-                const line = new THREE.Line(lineGeometry, gridMaterial);
-                leftGrid.add(line);
-            }
-            
-            // 垂直交叉線
-            for (let i = 0; i <= gridDivisions; i++) {
-                const lineGeometry = new THREE.BufferGeometry();
-                const points = [];
-                
-                const x = -gridSize + (i * gridStep);
-                points.push(new THREE.Vector3(x, gridSize * 0.5, -gridSize));
-                points.push(new THREE.Vector3(x * 0.5, 0, 0));
-                
-                lineGeometry.setFromPoints(points);
-                const line = new THREE.Line(lineGeometry, gridMaterial);
-                leftGrid.add(line);
-            }
-
-            // 創建右側網格（使用藍色）
-            const rightGrid = new THREE.Group();
-            for (let i = -gridDivisions; i <= gridDivisions; i++) {
-                const lineGeometry = new THREE.BufferGeometry();
-                const points = [];
-                
-                // 水平線
-                points.push(new THREE.Vector3(0, 0, i * gridStep));
-                points.push(new THREE.Vector3(gridSize, gridSize * 0.5, i * gridStep));
-                
-                lineGeometry.setFromPoints(points);
-                const line = new THREE.Line(lineGeometry, blueGridMaterial);
-                rightGrid.add(line);
-            }
-            
-            // 垂直交叉線
-            for (let i = 0; i <= gridDivisions; i++) {
-                const lineGeometry = new THREE.BufferGeometry();
-                const points = [];
-                
-                const x = i * gridStep;
-                points.push(new THREE.Vector3(x, 0, -gridSize));
-                points.push(new THREE.Vector3(x + gridSize * 0.5, gridSize * 0.5, 0));
-                
-                lineGeometry.setFromPoints(points);
-                const line = new THREE.Line(lineGeometry, blueGridMaterial);
-                rightGrid.add(line);
-            }
-
-            // 添加星星效果
-            const starsGeometry = new THREE.BufferGeometry();
-            const starsPositions = [];
-            for (let i = 0; i < 1000; i++) {
-                const x = Math.random() * gridSize * 3 - gridSize * 1.5;
-                const y = Math.random() * gridSize - gridSize * 0.5;
-                const z = Math.random() * gridSize * 2 - gridSize;
-                starsPositions.push(x, y, z);
-            }
-            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsPositions, 3));
-            const starsMaterial = new THREE.PointsMaterial({
-                color: 0xffffff,
-                size: 0.1,
-                transparent: true,
-                opacity: 0.8
-            });
-            const stars = new THREE.Points(starsGeometry, starsMaterial);
-
-            // 將網格和星星添加到場景
-            scene.add(leftGrid);
-            scene.add(rightGrid);
-            scene.add(stars);
-
-            // 稍微傾斜網格以獲得更好的視覺效果
-            leftGrid.rotation.x = -Math.PI * 0.1;
-            rightGrid.rotation.x = -Math.PI * 0.1;
-        }
     </script>
 
 </body>
