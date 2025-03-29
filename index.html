@@ -53,7 +53,7 @@
     <script type="module">
         // --- 配置 ---
         const BEYBLADE_TYPES = [ { id: 'pegasus', name: 'Grok', symbol: '⭐', color: 0x4488ff, colorHex: '#3160cb', weight: 1.0, initialSpeed: 0.15, stamina: 120 }, { id: 'l-drago', name: 'Gemini', symbol: '🔥', color: 0xff4444, colorHex: '#8b3261', weight: 1.3, initialSpeed: 0.12, stamina: 110 }, { id: 'libra', name: 'Chat-GPT', symbol: '⚖️', color: 0x44ff44, colorHex: '#438b59', weight: 1.1, initialSpeed: 0.11, stamina: 130 } ];
-        const ORIGINAL_ARENA_RADIUS = 15; const MIN_ARENA_RADIUS = 15; const MIN_REF_SCREEN_DIM = 360; const MAX_REF_SCREEN_DIM = 900; const BEYBLADE_RADIUS = 2;
+        const ORIGINAL_ARENA_RADIUS = 13; const MIN_ARENA_RADIUS = 13; const MIN_REF_SCREEN_DIM = 360; const MAX_REF_SCREEN_DIM = 900; const BEYBLADE_RADIUS = 2;
         const GRAVITY_TOWARDS_CENTER = 0.0300; const FRICTION = 0.0010; const SPIN_FRICTION = 0.0150; const BOUNDARY_ENERGY_LOSS = 0.3; const COLLISION_ENERGY_LOSS = 0.25; const INTENSITY_MULTIPLIER = 1.9; const TANGENTIAL_KICK_FACTOR = 30; const COLLISION_SPIN_LOSS_FACTOR = 2.0; const MAX_VELOCITY = 0.6;
         const OBSTACLE_COLLISION_ENERGY_LOSS = 0.35; const OBSTACLE_SEPARATION_FORCE = 0.1; // Note: OBSTACLE_SEPARATION_FORCE is not used in the plane-based collision, position is corrected directly.
         const OBSTACLE_SPIN_LOSS_FACTOR = 6;
